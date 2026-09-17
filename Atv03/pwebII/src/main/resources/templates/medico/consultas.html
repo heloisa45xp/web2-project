@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Consultas do Médico</title>
+</head>
+<body>
+<h2>Consultas de <span th:text="${medico.nome}"></span></h2>
+<a th:href="@{/medico/list}">Voltar</a><br><br>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Data/Hora</th>
+        <th>Valor</th>
+        <th>Observação</th>
+        <th>Paciente</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="c : ${consultas}">
+        <td th:text="${c.id}"></td>
+        <td th:text="${#temporals.format(c.data, 'dd/MM/yyyy HH:mm')}"></td>
+        <td th:text="'R$ ' + ${c.valor}"></td>
+        <td th:text="${c.observacao}"></td>
+        <td th:text="${c.paciente?.nome}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

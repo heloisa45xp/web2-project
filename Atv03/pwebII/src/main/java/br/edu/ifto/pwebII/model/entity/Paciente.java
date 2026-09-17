@@ -1,5 +1,6 @@
 package br.edu.ifto.pwebII.model.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -11,7 +12,7 @@ import java.util.List;
 @DiscriminatorValue("PACIENTE")
 public class Paciente extends PessoaFisica {
 
-    @OneToMany(mappedBy = "paciente")
+    @OneToMany(mappedBy = "paciente", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Consulta> consultas = new ArrayList<>();
 
     public Paciente() {
