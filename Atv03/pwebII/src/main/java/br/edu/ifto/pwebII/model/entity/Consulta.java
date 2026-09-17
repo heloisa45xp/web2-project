@@ -3,41 +3,49 @@ package br.edu.ifto.pwebII.model.entity;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
-
 public class Consulta implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
-    private LocalDate data;
+    private LocalDateTime data;
     private double valor;
     private String observacao;
 
-    public Consulta(Long id, LocalDate data, double valor, String observacao, String nome) {
-        this.id = id;
-        this.data = data;
-        this.valor = valor;
-        this.observacao = observacao;
-    }
-
-    //associaçao aqui
     @ManyToOne
-    @JoinColumn(name = "id_paciente") //coluna associativa
+    @JoinColumn(name = "paciente_id")
     private Paciente paciente;
 
     @ManyToOne
-    @JoinColumn(name = "id_medico")
+    @JoinColumn(name = "medico_id")
     private Medico medico;
 
-    public LocalDate getData() {
+    public Consulta() {
+    }
+
+    public Consulta(LocalDateTime data, double valor, String observacao, Paciente paciente, Medico medico) {
+        this.data = data;
+        this.valor = valor;
+        this.observacao = observacao;
+        this.paciente = paciente;
+        this.medico = medico;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public LocalDateTime getData() {
         return data;
     }
 
-    public void setData(LocalDate data) {
+    public void setData(LocalDateTime data) {
         this.data = data;
     }
 
@@ -57,13 +65,19 @@ public class Consulta implements Serializable {
         this.observacao = observacao;
     }
 
-    public Long getId() {
-        return id;
+    public Paciente getPaciente() {
+        return paciente;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setPaciente(Paciente paciente) {
+        this.paciente = paciente;
     }
 
+    public Medico getMedico() {
+        return medico;
+    }
 
+    public void setMedico(Medico medico) {
+        this.medico = medico;
+    }
 }
