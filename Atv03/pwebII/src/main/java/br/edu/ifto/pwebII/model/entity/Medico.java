@@ -1,5 +1,6 @@
 package br.edu.ifto.pwebII.model.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -13,7 +14,7 @@ public class Medico extends PessoaFisica {
 
     private String crm;
 
-    @OneToMany(mappedBy = "medico")
+    @OneToMany(mappedBy = "medico", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Consulta> consultas = new ArrayList<>();
 
     public Medico() {
