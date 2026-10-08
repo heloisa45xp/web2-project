@@ -1,32 +1,52 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
-<head>
-    <meta charset="UTF-8">
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br"
+      th:replace="~{fragments/layout :: layout(~{::head}, ~{::main})}">
+
+<head th:replace="~{fragments/head :: head(~{::title})}">
     <title>Consultas do Paciente</title>
 </head>
-<body>
-<h2>Consultas de <span th:text="${paciente.nome}"></span></h2>
-<a th:href="@{/paciente/list}">Voltar</a><br><br>
 
-<table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Data/Hora</th>
-        <th>Valor</th>
-        <th>Observação</th>
-        <th>Médico</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="c : ${consultas}">
-        <td th:text="${c.id}"></td>
-        <td th:text="${#temporals.format(c.data, 'dd/MM/yyyy HH:mm')}"></td>
-        <td th:text="'R$ ' + ${c.valor}"></td>
-        <td th:text="${c.observacao}"></td>
-        <td th:text="${c.medico?.nome}"></td>
-    </tr>
-    </tbody>
-</table>
+<body>
+
+<main>
+    <div class="container my-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h3 mb-0">
+                Consultas de <span th:text="${paciente.nome}">Paciente</span>
+            </h2>
+            <a class="btn btn-outline-secondary" th:href="@{/paciente/list}">Voltar</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-pastel align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Data/Hora</th>
+                    <th>Valor</th>
+                    <th>Observação</th>
+                    <th>Médico</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="c : ${consultas}">
+                    <td th:text="${c.id}"></td>
+                    <td th:text="${#temporals.format(c.data, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="'R$ ' + ${c.valor}"></td>
+                    <td th:text="${c.observacao}"></td>
+                    <td th:text="${c.medico?.nome}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="alert alert-info" th:if="${#lists.isEmpty(consultas)}">
+            Nenhuma consulta agendada para este paciente.
+        </div>
+
+    </div>
+</main>
+
 </body>
 </html>

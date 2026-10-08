@@ -1,29 +1,70 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
-<head>
-    <meta charset="UTF-8">
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br"
+      th:replace="~{fragments/layout :: layout(~{::head}, ~{::main})}">
+
+<head th:replace="~{fragments/head :: head(~{::title})}">
     <title>Cadastro de Paciente</title>
 </head>
+
 <body>
-<h2>Cadastro de Paciente</h2>
 
-<form th:action="${paciente.id == null} ? @{/paciente/save} : @{/paciente/update}" th:object="${paciente}" method="post">
-    <input type="hidden" th:field="*{id}">
+<main>
+    <div class="container my-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-9 col-xl-7">
 
-    <label>Nome:</label><br>
-    <input type="text" th:field="*{nome}" required><br><br>
+                <div class="card card-pastel shadow-sm">
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">
+                            <span th:text="${paciente.id == null} ? 'Cadastro de Paciente' : 'Editar Paciente'">Cadastro de Paciente</span>
+                        </h2>
+                    </div>
+                    <div class="card-body">
 
-    <label>CPF:</label><br>
-    <input type="text" th:field="*{cpf}" required><br><br>
+                        <form class="row g-3"
+                              th:action="${paciente.id == null} ? @{/paciente/save} : @{/paciente/update}"
+                              th:object="${paciente}" method="post">
 
-    <label>Email:</label><br>
-    <input type="email" th:field="*{email}" required><br><br>
+                            <input type="hidden" th:field="*{id}">
 
-    <label>Telefone:</label><br>
-    <input type="text" th:field="*{telefone}" required><br><br>
+                            <div class="col-md-6">
+                                <label class="form-label" for="nome">Nome</label>
+                                <input class="form-control" id="nome" type="text" th:field="*{nome}"
+                                       placeholder="Nome completo" required>
+                            </div>
 
-    <button type="submit">Salvar</button>
-    <a th:href="@{/paciente/list}">Cancelar</a>
-</form>
+                            <div class="col-md-6">
+                                <label class="form-label" for="cpf">CPF</label>
+                                <input class="form-control" id="cpf" type="text" th:field="*{cpf}"
+                                       placeholder="000.000.000-00" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" for="email">Email</label>
+                                <input class="form-control" id="email" type="email" th:field="*{email}"
+                                       placeholder="email@exemplo.com" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" for="telefone">Telefone</label>
+                                <input class="form-control" id="telefone" type="text" th:field="*{telefone}"
+                                       placeholder="(00) 00000-0000" required>
+                            </div>
+
+                            <div class="col-12 d-flex gap-2">
+                                <button class="btn btn-pastel" type="submit">Salvar</button>
+                                <a class="btn btn-outline-secondary" th:href="@{/paciente/list}">Cancelar</a>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
 </body>
 </html>
