@@ -1,38 +1,78 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Cadastro de Consulta</title>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br"
+      th:replace="~{fragments/layout :: layout(~{::head}, ~{::main})}">
+
+<head th:replace="~{fragments/head :: head(~{::title})}">
+    <title>Agendar Consulta</title>
 </head>
+
 <body>
-<h2>Agendar / Editar Consulta</h2>
 
-<form th:action="${consulta.id == null} ? @{/consulta/save} : @{/consulta/update}" th:object="${consulta}" method="post">
-    <input type="hidden" th:field="*{id}">
+<main>
+    <div class="container my-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-9 col-xl-7">
 
-    <label>Data e Hora:</label><br>
-    <input type="datetime-local" th:field="*{data}" required><br><br>
+                <div class="card card-pastel shadow-sm">
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">
+                            <span th:text="${consulta.id == null} ? 'Agendar Consulta' : 'Editar Consulta'">Agendar Consulta</span>
+                        </h2>
+                    </div>
+                    <div class="card-body">
 
-    <label>Valor:</label><br>
-    <input type="number" step="0.01" th:field="*{valor}" required><br><br>
+                        <form class="row g-3"
+                              th:action="${consulta.id == null} ? @{/consulta/save} : @{/consulta/update}"
+                              th:object="${consulta}" method="post">
 
-    <label>Observação:</label><br>
-    <textarea th:field="*{observacao}"></textarea><br><br>
+                            <input type="hidden" th:field="*{id}">
 
-    <label>Paciente:</label><br>
-    <select th:field="*{paciente.id}" required>
-        <option value="">Selecione um Paciente</option>
-        <option th:each="p : ${pacientes}" th:value="${p.id}" th:text="${p.nome}"></option>
-    </select><br><br>
+                            <div class="col-md-6">
+                                <label class="form-label" for="data">Data e Hora</label>
+                                <input class="form-control" id="data" type="datetime-local" th:field="*{data}" required>
+                            </div>
 
-    <label>Médico:</label><br>
-    <select th:field="*{medico.id}" required>
-        <option value="">Selecione um Médico</option>
-        <option th:each="m : ${medicos}" th:value="${m.id}" th:text="${m.nome} + ' (' + ${m.crm} + ')'"></option>
-    </select><br><br>
+                            <div class="col-md-6">
+                                <label class="form-label" for="valor">Valor (R$)</label>
+                                <input class="form-control" id="valor" type="number" step="0.01" th:field="*{valor}" required>
+                            </div>
 
-    <button type="submit">Salvar</button>
-    <a th:href="@{/consulta/list}">Cancelar</a>
-</form>
+                            <div class="col-12">
+                                <label class="form-label" for="observacao">Observação</label>
+                                <textarea class="form-control" id="observacao" rows="3" th:field="*{observacao}"></textarea>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" for="paciente">Paciente</label>
+                                <select class="form-select" id="paciente" th:field="*{paciente.id}" required>
+                                    <option value="">Selecione um Paciente</option>
+                                    <option th:each="p : ${pacientes}" th:value="${p.id}" th:text="${p.nome}"></option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" for="medico">Médico</label>
+                                <select class="form-select" id="medico" th:field="*{medico.id}" required>
+                                    <option value="">Selecione um Médico</option>
+                                    <option th:each="m : ${medicos}" th:value="${m.id}"
+                                            th:text="${m.nome} + ' (' + ${m.crm} + ')'"></option>
+                                </select>
+                            </div>
+
+                            <div class="col-12 d-flex gap-2">
+                                <button class="btn btn-pastel" type="submit">Salvar</button>
+                                <a class="btn btn-outline-secondary" th:href="@{/consulta/list}">Cancelar</a>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
 </body>
 </html>
