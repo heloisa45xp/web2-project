@@ -11,23 +11,28 @@
             <div class="collapse navbar-collapse" id="navbarPrincipal">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/paciente/list}"
-                           th:classappend="${#request.requestURI.contains('/paciente')} ? 'active'"
-                           th:attr="aria-current=${#request.requestURI.contains('/paciente')} ? 'page' : null">Pacientes</a>
+                        <a class="nav-link" th:href="@{/paciente/list}">Pacientes</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/medico/list}"
-                           th:classappend="${#request.requestURI.contains('/medico')} ? 'active'"
-                           th:attr="aria-current=${#request.requestURI.contains('/medico')} ? 'page' : null">Médicos</a>
+                        <a class="nav-link" th:href="@{/medico/list}">Médicos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/consulta/list}"
-                           th:classappend="${#request.requestURI.contains('/consulta')} ? 'active'"
-                           th:attr="aria-current=${#request.requestURI.contains('/consulta')} ? 'page' : null">Consultas</a>
+                        <a class="nav-link" th:href="@{/consulta/list}">Consultas</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
+
+    <script>
+        // Destaca no menu o item correspondente à página atual
+        document.querySelectorAll('#navbarPrincipal .nav-link').forEach(function (link) {
+            var destino = new URL(link.getAttribute('href'), window.location.origin).pathname;
+            if (window.location.pathname.startsWith(destino)) {
+                link.classList.add('active');
+                link.setAttribute('aria-current', 'page');
+            }
+        });
+    </script>
 
 </header>
