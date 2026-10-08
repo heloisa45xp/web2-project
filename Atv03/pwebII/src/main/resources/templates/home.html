@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br"
+      th:replace="~{fragments/layout :: layout(~{::head}, ~{::main})}">
+
+<head th:replace="~{fragments/head :: head(~{::title})}">
+    <title>Clínica PWEB II — Início</title>
+</head>
+
+<body>
+
+<main>
+    <div class="container my-4">
+
+        <!-- Apresentação -->
+        <div class="text-center mb-4">
+            <h1 class="display-5 fw-bold">Clínica PWEB II</h1>
+            <p class="lead text-muted">
+                Sistema de gestão de pacientes, médicos e consultas.
+                Escolha abaixo o módulo que deseja acessar:
+            </p>
+        </div>
+
+        <!-- Atalhos para as páginas -->
+        <div class="row justify-content-center g-4">
+
+            <div class="col-md-4">
+                <div class="card card-pastel shadow-sm h-100">
+                    <div class="card-header text-center">
+                        <h2 class="h5 mb-0">Pacientes</h2>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <p class="card-text">Cadastre pacientes e acompanhe as consultas de cada um.</p>
+                        <div class="mt-auto d-grid gap-2">
+                            <a class="btn btn-pastel" th:href="@{/paciente/list}">Ver lista de pacientes</a>
+                            <a class="btn btn-outline-secondary" th:href="@{/paciente/form}">Novo paciente</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card card-pastel shadow-sm h-100">
+                    <div class="card-header text-center">
+                        <h2 class="h5 mb-0">Médicos</h2>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <p class="card-text">Cadastre médicos e consulte as agendas de atendimento.</p>
+                        <div class="mt-auto d-grid gap-2">
+                            <a class="btn btn-pastel" th:href="@{/medico/list}">Ver lista de médicos</a>
+                            <a class="btn btn-outline-secondary" th:href="@{/medico/form}">Novo médico</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card card-pastel shadow-sm h-100">
+                    <div class="card-header text-center">
+                        <h2 class="h5 mb-0">Consultas</h2>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <p class="card-text">Agende, edite e acompanhe todas as consultas da clínica.</p>
+                        <div class="mt-auto d-grid gap-2">
+                            <a class="btn btn-pastel" th:href="@{/consulta/list}">Ver lista de consultas</a>
+                            <a class="btn btn-outline-secondary" th:href="@{/consulta/form}">Nova consulta</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</main>
+
+</body>
+</html>
