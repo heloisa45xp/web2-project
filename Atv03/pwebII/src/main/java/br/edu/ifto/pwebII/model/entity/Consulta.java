@@ -1,6 +1,7 @@
 package br.edu.ifto.pwebII.model.entity;
 
 import br.edu.ifto.pwebII.model.validation.ConsultaValida;
+import br.edu.ifto.pwebII.model.validation.ValorMonetario;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -20,6 +21,7 @@ public class Consulta implements Serializable {
     private LocalDateTime data;
 
     @PositiveOrZero(message = "O valor da consulta nao pode ser negativo.")
+    @ValorMonetario(message = "Informe um valor valido para a consulta.")
     private double valor;
 
     @Size(max = 500, message = "A observacao deve ter no maximo {max} caracteres.")
