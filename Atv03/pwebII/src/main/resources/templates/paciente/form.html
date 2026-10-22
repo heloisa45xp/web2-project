@@ -30,25 +30,41 @@
                             <div class="col-md-6">
                                 <label class="form-label" for="nome">Nome</label>
                                 <input class="form-control" id="nome" type="text" th:field="*{nome}"
+                                       th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid'"
                                        placeholder="Nome completo" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('nome')}"
+                                     th:each="err : ${#fields.errors('nome')}"
+                                     th:text="${err}"></div>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label" for="cpf">CPF</label>
                                 <input class="form-control" id="cpf" type="text" th:field="*{cpf}"
+                                       th:classappend="${#fields.hasErrors('cpf')} ? 'is-invalid'"
                                        placeholder="000.000.000-00" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('cpf')}"
+                                     th:each="err : ${#fields.errors('cpf')}"
+                                     th:text="${err}"></div>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label" for="email">Email</label>
                                 <input class="form-control" id="email" type="email" th:field="*{email}"
+                                       th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"
                                        placeholder="email@exemplo.com" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}"
+                                     th:each="err : ${#fields.errors('email')}"
+                                     th:text="${err}"></div>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label" for="telefone">Telefone</label>
                                 <input class="form-control" id="telefone" type="text" th:field="*{telefone}"
+                                       th:classappend="${#fields.hasErrors('telefone')} ? 'is-invalid'"
                                        placeholder="(00) 00000-0000" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('telefone')}"
+                                     th:each="err : ${#fields.errors('telefone')}"
+                                     th:text="${err}"></div>
                             </div>
 
                             <div class="col-12 d-flex gap-2">

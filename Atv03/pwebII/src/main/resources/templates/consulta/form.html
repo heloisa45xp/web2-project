@@ -29,34 +29,58 @@
 
                             <div class="col-md-6">
                                 <label class="form-label" for="data">Data e Hora</label>
-                                <input class="form-control" id="data" type="datetime-local" th:field="*{data}" required>
+                                <input class="form-control" id="data" type="datetime-local" th:field="*{data}"
+                                       th:classappend="${#fields.hasErrors('data')} ? 'is-invalid'"
+                                       required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('data')}"
+                                     th:each="err : ${#fields.errors('data')}"
+                                     th:text="${err}"></div>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label" for="valor">Valor (R$)</label>
-                                <input class="form-control" id="valor" type="number" step="0.01" th:field="*{valor}" required>
+                                <input class="form-control" id="valor" type="number" step="0.01" th:field="*{valor}"
+                                       th:classappend="${#fields.hasErrors('valor')} ? 'is-invalid'"
+                                       required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('valor')}"
+                                     th:each="err : ${#fields.errors('valor')}"
+                                     th:text="${err}"></div>
                             </div>
 
                             <div class="col-12">
                                 <label class="form-label" for="observacao">Observação</label>
-                                <textarea class="form-control" id="observacao" rows="3" th:field="*{observacao}"></textarea>
+                                <textarea class="form-control" id="observacao" rows="3" th:field="*{observacao}"
+                                          th:classappend="${#fields.hasErrors('observacao')} ? 'is-invalid'"></textarea>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('observacao')}"
+                                     th:each="err : ${#fields.errors('observacao')}"
+                                     th:text="${err}"></div>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label" for="paciente">Paciente</label>
-                                <select class="form-select" id="paciente" th:field="*{paciente.id}" required>
+                                <select class="form-select" id="paciente" th:field="*{paciente.id}"
+                                        th:classappend="${#fields.hasErrors('paciente')} ? 'is-invalid'"
+                                        required>
                                     <option value="">Selecione um Paciente</option>
                                     <option th:each="p : ${pacientes}" th:value="${p.id}" th:text="${p.nome}"></option>
                                 </select>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('paciente')}"
+                                     th:each="err : ${#fields.errors('paciente')}"
+                                     th:text="${err}"></div>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label" for="medico">Médico</label>
-                                <select class="form-select" id="medico" th:field="*{medico.id}" required>
+                                <select class="form-select" id="medico" th:field="*{medico.id}"
+                                        th:classappend="${#fields.hasErrors('medico')} ? 'is-invalid'"
+                                        required>
                                     <option value="">Selecione um Médico</option>
                                     <option th:each="m : ${medicos}" th:value="${m.id}"
                                             th:text="${m.nome} + ' (' + ${m.crm} + ')'"></option>
                                 </select>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('medico')}"
+                                     th:each="err : ${#fields.errors('medico')}"
+                                     th:text="${err}"></div>
                             </div>
 
                             <div class="col-12 d-flex gap-2">
