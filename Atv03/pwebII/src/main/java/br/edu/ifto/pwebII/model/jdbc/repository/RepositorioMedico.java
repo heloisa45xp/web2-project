@@ -37,7 +37,30 @@ public class RepositorioMedico {
       editm.merge(medico);
   }
 
+  /**
+   * Verifica se ja existe um medico cadastrado com o CRM informado.
+   *
+   * @param crm         CRM procurado
+   * @param idIgnorado  identificador a desconsiderar na busca (usado na edicao
+   *                    para nao encontrar o proprio registro)
+   * @return true quando existe outro medico com o mesmo CRM
+   */
+  public boolean existeCrm(String crm, Long idIgnorado) {
+      String jpql = "select count(m) from Medico m where m.crm = :crm";
 
+      if (idIgnorado != null) {
+          jpql += " and m.id <> :id";
+      }
+
+      Query query = editm.createQuery(jpql);
+      query.setParameter("crm", crm);
+
+      if (idIgnorado != null) {
+          query.setParameter("id", idIgnorado);
+      }
+
+      return ((Number) query.getSingleResult()).longValue() > 0;
+  }
 
 }
 
