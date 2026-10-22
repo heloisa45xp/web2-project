@@ -2,6 +2,7 @@ package br.edu.ifto.pwebII.model.entity;
 
 import br.edu.ifto.pwebII.model.validation.Cadastro;
 import br.edu.ifto.pwebII.model.validation.ConsultaValida;
+import br.edu.ifto.pwebII.model.validation.Edicao;
 import br.edu.ifto.pwebII.model.validation.ValorMonetario;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.FutureOrPresent;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 public class Consulta implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NotNull(message = "Informe o identificador da consulta.", groups = Edicao.class)
     private Long id;
 
     @NotNull(message = "Informe a data e a hora da consulta.")

@@ -1,8 +1,10 @@
 package br.edu.ifto.pwebII.model.entity;
 
+import br.edu.ifto.pwebII.model.validation.Edicao;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
@@ -15,6 +17,7 @@ public abstract class Pessoa implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NotNull(message = "Informe o identificador do registro.", groups = Edicao.class)
     private Long id;
 
     @NotBlank(message = "Informe o e-mail.")
