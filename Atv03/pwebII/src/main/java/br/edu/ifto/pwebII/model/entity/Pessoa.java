@@ -1,6 +1,10 @@
 package br.edu.ifto.pwebII.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
 
@@ -12,7 +16,16 @@ public abstract class Pessoa implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "Informe o e-mail.")
+    @Email(message = "Informe um e-mail valido.")
+    @Size(max = 100, message = "O e-mail deve ter no maximo {max} caracteres.")
     private String email;
+
+    @NotBlank(message = "Informe o telefone.")
+    @Pattern(regexp = "^\\(?\\d{2}\\)?[\\s-]?\\d{4,5}[\\s-]?\\d{4}$",
+            message = "Informe um telefone valido com DDD, por exemplo (63) 99999-9999.")
+    @Size(max = 20, message = "O telefone deve ter no maximo {max} caracteres.")
     private String telefone;
 
     public Pessoa() {
