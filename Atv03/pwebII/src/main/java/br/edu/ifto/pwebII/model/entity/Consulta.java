@@ -1,8 +1,10 @@
 package br.edu.ifto.pwebII.model.entity;
 
+import br.edu.ifto.pwebII.model.validation.Cadastro;
 import br.edu.ifto.pwebII.model.validation.ConsultaValida;
 import br.edu.ifto.pwebII.model.validation.ValorMonetario;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
@@ -18,6 +20,8 @@ public class Consulta implements Serializable {
     private Long id;
 
     @NotNull(message = "Informe a data e a hora da consulta.")
+    @FutureOrPresent(message = "A data da consulta deve ser a de hoje ou uma data futura.",
+            groups = Cadastro.class)
     private LocalDateTime data;
 
     @PositiveOrZero(message = "O valor da consulta nao pode ser negativo.")
