@@ -1,5 +1,6 @@
 package br.edu.ifto.pwebII.model.entity;
 
+import br.edu.ifto.pwebII.model.validation.Cpf;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;
@@ -17,6 +18,7 @@ public class PessoaFisica extends Pessoa {
     @NotBlank(message = "Informe o CPF.")
     @Pattern(regexp = "^\\d{3}\\.?\\d{3}\\.?\\d{3}-?\\d{2}$",
             message = "Informe um CPF valido, por exemplo 000.000.000-00.")
+    @Cpf(message = "O CPF informado possui digitos verificadores invalidos.")
     private String cpf;
 
     public PessoaFisica() {
