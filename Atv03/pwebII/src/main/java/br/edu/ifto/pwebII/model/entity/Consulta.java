@@ -1,6 +1,9 @@
 package br.edu.ifto.pwebII.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -10,8 +13,14 @@ public class Consulta implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull(message = "Informe a data e a hora da consulta.")
     private LocalDateTime data;
+
+    @PositiveOrZero(message = "O valor da consulta nao pode ser negativo.")
     private double valor;
+
+    @Size(max = 500, message = "A observacao deve ter no maximo {max} caracteres.")
     private String observacao;
 
     @ManyToOne
