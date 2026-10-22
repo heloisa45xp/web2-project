@@ -1,5 +1,6 @@
 package br.edu.ifto.pwebII.model.entity;
 
+import br.edu.ifto.pwebII.model.validation.ConsultaValida;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -9,6 +10,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
+@ConsultaValida
 public class Consulta implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,10 +25,12 @@ public class Consulta implements Serializable {
     @Size(max = 500, message = "A observacao deve ter no maximo {max} caracteres.")
     private String observacao;
 
+    @NotNull(message = "Selecione o paciente da consulta.")
     @ManyToOne
     @JoinColumn(name = "paciente_id")
     private Paciente paciente;
 
+    @NotNull(message = "Selecione o medico da consulta.")
     @ManyToOne
     @JoinColumn(name = "medico_id")
     private Medico medico;
