@@ -33,8 +33,29 @@ public class RepositorioMedico {
       }
   }
 
+  /**
+   * Atualiza os dados do medico.
+   *
+   * <p>A atualizacao e feita sobre a entidade gerenciada, e nao com
+   * {@code merge} do objeto detached. O {@code merge} copia a lista de
+   * consultas (vazia, pois o formulario nao a envia) para a entidade
+   * gerenciada e, como a collection possui {@code orphanRemoval}, o
+   * Hibernate remove as consultas do medico como orfas.</p>
+   *
+   * @param medico dados do medico a atualizar
+   */
   public void update(Medico medico) {
-      editm.merge(medico);
+      Medico managed = editm.find(Medico.class, medico.getId());
+
+      if (managed == null) {
+          return;
+      }
+
+      managed.setNome(medico.getNome());
+      managed.setCpf(medico.getCpf());
+      managed.setEmail(medico.getEmail());
+      managed.setTelefone(medico.getTelefone());
+      managed.setCrm(medico.getCrm());
   }
 
   /**
