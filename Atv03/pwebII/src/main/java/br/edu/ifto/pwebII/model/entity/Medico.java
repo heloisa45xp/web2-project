@@ -4,6 +4,8 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,9 @@ import java.util.List;
 @DiscriminatorValue("MEDICO")
 public class Medico extends PessoaFisica {
 
+    @NotBlank(message = "Informe o CRM.")
+    @Pattern(regexp = "^CRM/[A-Z]{2}\\s?\\d{4,6}$",
+            message = "Informe o CRM no formato CRM/UF 1234, por exemplo CRM/TO 1234.")
     private String crm;
 
     @OneToMany(mappedBy = "medico", cascade = CascadeType.REMOVE, orphanRemoval = true)
