@@ -43,6 +43,11 @@
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 		<dependency>
+			<!-- Spring Security: autenticação e controle de acesso por perfil. -->
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
 			<!-- Bean Validation (Jakarta Validation) + Hibernate Validator:
 			     habilita as anotações de validação (@NotBlank, @Email, @Pattern, ...)
 			     nos controllers e nas entidades. -->
