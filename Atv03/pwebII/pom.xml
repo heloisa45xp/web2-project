@@ -48,6 +48,11 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 		<dependency>
+			<!-- Integração do Spring Security com os templates Thymeleaf (sec:...). -->
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity6</artifactId>
+		</dependency>
+		<dependency>
 			<!-- Bean Validation (Jakarta Validation) + Hibernate Validator:
 			     habilita as anotações de validação (@NotBlank, @Email, @Pattern, ...)
 			     nos controllers e nas entidades. -->
