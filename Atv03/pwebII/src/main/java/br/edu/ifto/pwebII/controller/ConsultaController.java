@@ -1,5 +1,7 @@
 package br.edu.ifto.pwebII.controller;
 
+import static br.edu.ifto.pwebII.config.SecurityUtils.redirectAfterOperation;
+
 import br.edu.ifto.pwebII.model.entity.Consulta;
 import br.edu.ifto.pwebII.model.jdbc.repository.RepositorioConsulta;
 import br.edu.ifto.pwebII.model.jdbc.repository.RepositorioMedico;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,14 +51,14 @@ public class ConsultaController {
     @Transactional
     @PostMapping("save")
     public ModelAndView save(@Validated({Default.class, Cadastro.class}) Consulta consulta,
-                             BindingResult result, ModelMap model) {
+                             BindingResult result, ModelMap model, Authentication authentication) {
         if (result.hasErrors()) {
             model.addAttribute("pacientes", pacienteRepository.pacientes());
             model.addAttribute("medicos", medicoRepository.medicos());
             return new ModelAndView("consulta/form", model);
         }
         repository.save(consulta);
-        return new ModelAndView("redirect:/consulta/list");
+        return new ModelAndView(redirectAfterOperation(authentication, "/consulta/list"));
     }
 
     @GetMapping("/edit/{id}")
@@ -69,20 +72,20 @@ public class ConsultaController {
     @Transactional
     @PostMapping("update")
     public ModelAndView update(@Validated({Default.class, Edicao.class}) Consulta consulta,
-                               BindingResult result, ModelMap model) {
+                               BindingResult result, ModelMap model, Authentication authentication) {
         if (result.hasErrors()) {
             model.addAttribute("pacientes", pacienteRepository.pacientes());
             model.addAttribute("medicos", medicoRepository.medicos());
             return new ModelAndView("consulta/form", model);
         }
         repository.update(consulta);
-        return new ModelAndView("redirect:/consulta/list");
+        return new ModelAndView(redirectAfterOperation(authentication, "/consulta/list"));
     }
 
     @Transactional
     @GetMapping("/remove/{id}")
-    public ModelAndView remove(@PathVariable("id") Long id) {
+    public ModelAndView remove(@PathVariable("id") Long id, Authentication authentication) {
         repository.remove(id);
-        return new ModelAndView("redirect:/consulta/list");
+        return new ModelAndView(redirectAfterOperation(authentication, "/consulta/list"));
     }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="pt-br"
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="pt-br"
       th:replace="~{fragments/layout :: layout(~{::head}, ~{::main})}">
 
 <head th:replace="~{fragments/head :: head(~{::title})}">
@@ -79,7 +79,8 @@
 
                             <div class="col-12 d-flex gap-2">
                                 <button class="btn btn-pastel" type="submit">Salvar</button>
-                                <a class="btn btn-outline-secondary" th:href="@{/medico/list}">Cancelar</a>
+                                <a sec:authorize="hasRole('ADMIN')" class="btn btn-outline-secondary" th:href="@{/medico/list}">Cancelar</a>
+                                <a sec:authorize="!hasRole('ADMIN')" class="btn btn-outline-secondary" th:href="@{/}">Cancelar</a>
                             </div>
 
                         </form>
