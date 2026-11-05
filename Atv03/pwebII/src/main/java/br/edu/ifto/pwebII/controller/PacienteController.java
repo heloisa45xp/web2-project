@@ -1,5 +1,7 @@
 package br.edu.ifto.pwebII.controller;
 
+import static br.edu.ifto.pwebII.config.SecurityUtils.redirectAfterOperation;
+
 import br.edu.ifto.pwebII.model.entity.Paciente;
 import br.edu.ifto.pwebII.model.jdbc.repository.RepositorioConsulta;
 import br.edu.ifto.pwebII.model.jdbc.repository.RepositorioPaciente;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,7 +49,7 @@ public class PacienteController {
 
     @Transactional
     @PostMapping("save")
-    public ModelAndView save(@Valid Paciente paciente, BindingResult result) {
+    public ModelAndView save(@Valid Paciente paciente, BindingResult result, Authentication authentication) {
         if (result.hasErrors()) {
             return new ModelAndView("paciente/form");
         }
@@ -62,7 +65,7 @@ public class PacienteController {
         }
 
         repository.save(paciente);
-        return new ModelAndView("redirect:/paciente/list");
+        return new ModelAndView(redirectAfterOperation(authentication, "/paciente/list"));
     }
 
     @GetMapping("/edit/{id}")
@@ -74,7 +77,7 @@ public class PacienteController {
     @Transactional
     @PostMapping("update")
     public ModelAndView update(@Validated({Default.class, Edicao.class}) Paciente paciente,
-                               BindingResult result) {
+                               BindingResult result, Authentication authentication) {
         if (result.hasErrors()) {
             return new ModelAndView("paciente/form");
         }
@@ -90,14 +93,14 @@ public class PacienteController {
         }
 
         repository.update(paciente);
-        return new ModelAndView("redirect:/paciente/list");
+        return new ModelAndView(redirectAfterOperation(authentication, "/paciente/list"));
     }
 
     @Transactional
     @GetMapping("/remove/{id}")
-    public ModelAndView remove(@PathVariable("id") Long id) {
+    public ModelAndView remove(@PathVariable("id") Long id, Authentication authentication) {
         repository.remove(id);
-        return new ModelAndView("redirect:/paciente/list");
+        return new ModelAndView(redirectAfterOperation(authentication, "/paciente/list"));
     }
 
     // Requisito: Visualizar consultas de um paciente

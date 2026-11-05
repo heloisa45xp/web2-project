@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="pt-br"
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="pt-br"
       th:replace="~{fragments/layout :: layout(~{::head}, ~{::main})}">
 
 <head th:replace="~{fragments/head :: head(~{::title})}">
@@ -15,7 +15,8 @@
             <h2 class="h3 mb-0">
                 Consultas de <span th:text="${paciente.nome}">Paciente</span>
             </h2>
-            <a class="btn btn-outline-secondary" th:href="@{/paciente/list}">Voltar</a>
+            <a sec:authorize="hasRole('ADMIN')" class="btn btn-outline-secondary" th:href="@{/paciente/list}">Voltar</a>
+            <a sec:authorize="!hasRole('ADMIN')" class="btn btn-outline-secondary" th:href="@{/}">Voltar</a>
         </div>
 
         <div class="table-responsive">
