@@ -53,9 +53,35 @@ public class Usuario implements UserDetails, Serializable {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (perfis == null) {
+            return List.of();
+        }
         return perfis.stream()
-                .map(perfil -> new SimpleGrantedAuthority("ROLE_" + perfil.getNome()))
+                .map(perfil -> {
+                    String nome = perfil.getNome();
+                    return new SimpleGrantedAuthority(nome.startsWith("ROLE_") ? nome : "ROLE_" + nome);
+                })
                 .toList();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     @Override

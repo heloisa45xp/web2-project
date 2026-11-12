@@ -31,6 +31,10 @@ public abstract class Pessoa implements Serializable {
     @Size(max = 20, message = "O telefone deve ter no maximo {max} caracteres.")
     private String telefone;
 
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "usuario_id", unique = true)
+    private Usuario usuario = new Usuario();
+
     public Pessoa() {
     }
 
@@ -61,5 +65,25 @@ public abstract class Pessoa implements Serializable {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public void criarUsuario(String login, String senhaCodificada, Perfil... perfis) {
+        Usuario novoUsuario = new Usuario();
+        novoUsuario.setUsuario(login);
+        novoUsuario.setSenha(senhaCodificada);
+        if (perfis != null) {
+            for (Perfil p : perfis) {
+                novoUsuario.adicionarPerfil(p);
+            }
+        }
+        this.usuario = novoUsuario;
     }
 }

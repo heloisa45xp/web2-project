@@ -1,4 +1,3 @@
-
 <header th:fragment="header" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
     <nav class="navbar navbar-expand-lg navbar-light navbar-pastel">
@@ -10,19 +9,25 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarPrincipal">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')">
                         <a class="nav-link" th:href="@{/paciente/list}">Pacientes</a>
                     </li>
-                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO', 'PACIENTE')">
                         <a class="nav-link" th:href="@{/medico/list}">Médicos</a>
                     </li>
-                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')">
                         <a class="nav-link" th:href="@{/consulta/list}">Consultas</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" sec:authorize="hasRole('PACIENTE') and !hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')">
+                        <a class="nav-link" th:href="@{/paciente/minhas-consultas}">Minhas Consultas</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('MEDICO')">
+                        <a class="nav-link" th:href="@{/medico/minha-agenda}">Minha Agenda</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="!isAuthenticated() or hasAnyRole('ADMIN', 'SECRETARIO')">
                         <a class="nav-link" th:href="@{/paciente/form}">Novo paciente</a>
                     </li>
-                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO', 'PACIENTE')">
                         <a class="nav-link" th:href="@{/consulta/form}">Nova consulta</a>
                     </li>
                 </ul>
@@ -33,6 +38,10 @@
                     <li class="nav-item d-flex align-items-center me-lg-3" sec:authorize="isAuthenticated()">
                         <span class="navbar-text">
                             Olá, <strong sec:authentication="name">usuário</strong>
+                            <span class="badge bg-secondary ms-1" sec:authorize="hasRole('ADMIN')">Admin</span>
+                            <span class="badge bg-info text-dark ms-1" sec:authorize="hasRole('SECRETARIO')">Secretário</span>
+                            <span class="badge bg-success ms-1" sec:authorize="hasRole('MEDICO')">Médico</span>
+                            <span class="badge bg-primary ms-1" sec:authorize="hasRole('PACIENTE') and !hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')">Paciente</span>
                         </span>
                     </li>
                     <li class="nav-item" sec:authorize="isAuthenticated()">
@@ -49,7 +58,7 @@
         // Destaca no menu o item correspondente à página atual
         document.querySelectorAll('#navbarPrincipal .nav-link').forEach(function (link) {
             var destino = new URL(link.getAttribute('href'), window.location.origin).pathname;
-            if (window.location.pathname.startsWith(destino)) {
+            if (window.location.pathname.startsWith(destino) && destino !== '/') {
                 link.classList.add('active');
                 link.setAttribute('aria-current', 'page');
             }

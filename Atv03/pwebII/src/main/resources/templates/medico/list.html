@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="pt-br"
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="pt-br"
       th:replace="~{fragments/layout :: layout(~{::head}, ~{::main})}">
 
 <head th:replace="~{fragments/head :: head(~{::title})}">
@@ -13,7 +13,7 @@
 
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 class="h3 mb-0">Lista de Médicos</h2>
-            <a class="btn btn-pastel" th:href="@{/medico/form}">Novo Médico</a>
+            <a class="btn btn-pastel" sec:authorize="hasRole('ADMIN')" th:href="@{/medico/form}">Novo Médico</a>
         </div>
 
         <div class="table-responsive">
@@ -26,7 +26,7 @@
                     <th>Email</th>
                     <th>Telefone</th>
                     <th>CRM</th>
-                    <th class="text-end">Ações</th>
+                    <th class="text-end" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')">Ações</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -37,12 +37,12 @@
                     <td th:text="${m.email}"></td>
                     <td th:text="${m.telefone}"></td>
                     <td th:text="${m.crm}"></td>
-                    <td class="text-end text-nowrap">
+                    <td class="text-end text-nowrap" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')">
                         <a class="btn btn-sm btn-outline-secondary"
                            th:href="@{/medico/consultas/{id}(id=${m.id})}">Ver Consultas</a>
-                        <a class="btn btn-sm btn-pastel"
+                        <a class="btn btn-sm btn-pastel" sec:authorize="hasRole('ADMIN')"
                            th:href="@{/medico/edit/{id}(id=${m.id})}">Editar</a>
-                        <a class="btn btn-sm btn-outline-danger"
+                        <a class="btn btn-sm btn-outline-danger" sec:authorize="hasRole('ADMIN')"
                            onclick="return window.confirm('Excluir Registro?')"
                            th:href="@{/medico/remove/{id}(id=${m.id})}">Excluir</a>
                     </td>

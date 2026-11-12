@@ -27,6 +27,11 @@
 
                             <input type="hidden" th:field="*{id}">
 
+                            <!-- Dados do Médico -->
+                            <div class="col-12">
+                                <h3 class="h6 text-muted border-bottom pb-2 mb-0">Dados Profissionais e Pessoais</h3>
+                            </div>
+
                             <div class="col-md-6">
                                 <label class="form-label" for="nome">Nome</label>
                                 <input class="form-control" id="nome" type="text" th:field="*{nome}"
@@ -67,17 +72,43 @@
                                      th:text="${err}"></div>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <label class="form-label" for="crm">CRM</label>
                                 <input class="form-control" id="crm" type="text" th:field="*{crm}"
                                        th:classappend="${#fields.hasErrors('crm')} ? 'is-invalid'"
-                                       placeholder="CRM/UF" required>
+                                       placeholder="CRM/UF 1234" required>
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('crm')}"
                                      th:each="err : ${#fields.errors('crm')}"
                                      th:text="${err}"></div>
                             </div>
 
-                            <div class="col-12 d-flex gap-2">
+                            <!-- Credenciais de Acesso ao Sistema -->
+                            <div class="col-12 mt-4">
+                                <h3 class="h6 text-muted border-bottom pb-2 mb-0">Credenciais de Acesso (Login)</h3>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" for="usuario">Nome de Usuário (Login)</label>
+                                <input class="form-control" id="usuario" type="text" th:field="*{usuario.usuario}"
+                                       th:classappend="${#fields.hasErrors('usuario.usuario')} ? 'is-invalid'"
+                                       placeholder="Ex: dr.carlos" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('usuario.usuario')}"
+                                     th:each="err : ${#fields.errors('usuario.usuario')}"
+                                     th:text="${err}"></div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" for="senha">Senha</label>
+                                <input class="form-control" id="senha" type="password" th:field="*{usuario.senha}"
+                                       th:classappend="${#fields.hasErrors('usuario.senha')} ? 'is-invalid'"
+                                       th:placeholder="${medico.id == null} ? 'Digite uma senha segura' : 'Deixe em branco para manter a senha atual'"
+                                       th:required="${medico.id == null}">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('usuario.senha')}"
+                                     th:each="err : ${#fields.errors('usuario.senha')}"
+                                     th:text="${err}"></div>
+                            </div>
+
+                            <div class="col-12 d-flex gap-2 mt-4">
                                 <button class="btn btn-pastel" type="submit">Salvar</button>
                                 <a sec:authorize="hasRole('ADMIN')" class="btn btn-outline-secondary" th:href="@{/medico/list}">Cancelar</a>
                                 <a sec:authorize="!hasRole('ADMIN')" class="btn btn-outline-secondary" th:href="@{/}">Cancelar</a>

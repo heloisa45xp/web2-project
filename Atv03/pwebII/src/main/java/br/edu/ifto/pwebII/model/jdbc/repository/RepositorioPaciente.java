@@ -58,6 +58,18 @@ public class RepositorioPaciente {
         managed.setCpf(paciente.getCpf());
         managed.setEmail(paciente.getEmail());
         managed.setTelefone(paciente.getTelefone());
+
+        if (paciente.getUsuario() != null) {
+            if (managed.getUsuario() == null) {
+                managed.setUsuario(new br.edu.ifto.pwebII.model.entity.Usuario());
+            }
+            if (paciente.getUsuario().getUsuario() != null && !paciente.getUsuario().getUsuario().isBlank()) {
+                managed.getUsuario().setUsuario(paciente.getUsuario().getUsuario());
+            }
+            if (paciente.getUsuario().getSenha() != null && !paciente.getUsuario().getSenha().isBlank()) {
+                managed.getUsuario().setSenha(paciente.getUsuario().getSenha());
+            }
+        }
     }
 
 

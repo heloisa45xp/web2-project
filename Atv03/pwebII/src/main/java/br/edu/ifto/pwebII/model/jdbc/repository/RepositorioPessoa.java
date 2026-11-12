@@ -1,5 +1,6 @@
 package br.edu.ifto.pwebII.model.jdbc.repository;
 
+import br.edu.ifto.pwebII.model.entity.Pessoa;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -69,5 +70,21 @@ public class RepositorioPessoa {
         }
 
         return ((Number) query.getSingleResult()).longValue() > 0;
+    }
+
+    public Pessoa buscarPorEmail(String email) {
+        Query query = editm.createQuery("select p from Pessoa p where p.email = :email");
+        query.setParameter("email", email);
+
+        java.util.List<Pessoa> resultado = query.getResultList();
+        return resultado.isEmpty() ? null : resultado.get(0);
+    }
+
+    public Pessoa buscarPorUsuario(String usuario) {
+        Query query = editm.createQuery("select p from Pessoa p where p.usuario.usuario = :usuario");
+        query.setParameter("usuario", usuario);
+
+        java.util.List<Pessoa> resultado = query.getResultList();
+        return resultado.isEmpty() ? null : resultado.get(0);
     }
 }

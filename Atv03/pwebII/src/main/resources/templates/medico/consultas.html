@@ -15,8 +15,8 @@
             <h2 class="h3 mb-0">
                 Consultas de <span th:text="${medico.nome}">Médico</span>
             </h2>
-            <a sec:authorize="hasRole('ADMIN')" class="btn btn-outline-secondary" th:href="@{/medico/list}">Voltar</a>
-            <a sec:authorize="!hasRole('ADMIN')" class="btn btn-outline-secondary" th:href="@{/}">Voltar</a>
+            <a sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')" class="btn btn-outline-secondary" th:href="@{/medico/list}">Voltar</a>
+            <a sec:authorize="!hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')" class="btn btn-outline-secondary" th:href="@{/}">Voltar</a>
         </div>
 
         <div class="table-responsive">
