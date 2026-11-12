@@ -56,6 +56,18 @@ public class RepositorioMedico {
       managed.setEmail(medico.getEmail());
       managed.setTelefone(medico.getTelefone());
       managed.setCrm(medico.getCrm());
+
+      if (medico.getUsuario() != null) {
+          if (managed.getUsuario() == null) {
+              managed.setUsuario(new br.edu.ifto.pwebII.model.entity.Usuario());
+          }
+          if (medico.getUsuario().getUsuario() != null && !medico.getUsuario().getUsuario().isBlank()) {
+              managed.getUsuario().setUsuario(medico.getUsuario().getUsuario());
+          }
+          if (medico.getUsuario().getSenha() != null && !medico.getUsuario().getSenha().isBlank()) {
+              managed.getUsuario().setSenha(medico.getUsuario().getSenha());
+          }
+      }
   }
 
   /**

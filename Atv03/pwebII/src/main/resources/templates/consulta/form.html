@@ -50,13 +50,22 @@
                             <div class="col-12">
                                 <label class="form-label" for="observacao">Observação</label>
                                 <textarea class="form-control" id="observacao" rows="3" th:field="*{observacao}"
+                                          placeholder="Descreva sintomas, histórico ou observações clínicas"
                                           th:classappend="${#fields.hasErrors('observacao')} ? 'is-invalid'"></textarea>
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('observacao')}"
                                      th:each="err : ${#fields.errors('observacao')}"
                                      th:text="${err}"></div>
                             </div>
 
-                            <div class="col-md-6">
+                            <!-- Paciente: se for paciente logado, fixa o nome dele; senao exibe select para admin/secretario -->
+                            <div class="col-md-6" th:if="${pacienteLogado != null}">
+                                <label class="form-label" for="pacienteNomeFixo">Paciente</label>
+                                <input type="hidden" th:field="*{paciente.id}">
+                                <input class="form-control" id="pacienteNomeFixo" type="text"
+                                       th:value="${pacienteLogado.nome}" readonly>
+                            </div>
+
+                            <div class="col-md-6" th:if="${pacienteLogado == null}">
                                 <label class="form-label" for="paciente">Paciente</label>
                                 <select class="form-select" id="paciente" th:field="*{paciente.id}"
                                         th:classappend="${#fields.hasErrors('paciente')} ? 'is-invalid'"
@@ -83,10 +92,10 @@
                                      th:text="${err}"></div>
                             </div>
 
-                            <div class="col-12 d-flex gap-2">
+                            <div class="col-12 d-flex gap-2 mt-4">
                                 <button class="btn btn-pastel" type="submit">Salvar</button>
-                                <a sec:authorize="hasRole('ADMIN')" class="btn btn-outline-secondary" th:href="@{/consulta/list}">Cancelar</a>
-                                <a sec:authorize="!hasRole('ADMIN')" class="btn btn-outline-secondary" th:href="@{/}">Cancelar</a>
+                                <a sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')" class="btn btn-outline-secondary" th:href="@{/consulta/list}">Cancelar</a>
+                                <a sec:authorize="!hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')" class="btn btn-outline-secondary" th:href="@{/}">Cancelar</a>
                             </div>
 
                         </form>
