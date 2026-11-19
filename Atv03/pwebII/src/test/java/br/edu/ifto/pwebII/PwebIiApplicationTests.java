@@ -121,7 +121,7 @@ class PwebIiApplicationTests {
     }
 
     @Test
-    @DisplayName("Controle de acesso do perfil PACIENTE: pode ver medicos, mas nao lista de pacientes nem cadastro de medico")
+    @DisplayName("Controle de acesso do perfil PACIENTE: nao pode criar consulta nem ver lista geral de consultas")
     void controleAcessoPaciente() throws Exception {
         mockMvc.perform(get("/medico/list").with(user("heloisa").roles("PACIENTE")))
                 .andExpect(status().isOk());
@@ -134,6 +134,33 @@ class PwebIiApplicationTests {
 
         mockMvc.perform(get("/medico/form").with(user("heloisa").roles("PACIENTE")))
                 .andExpect(status().isForbidden());
+
+        mockMvc.perform(get("/consulta/form").with(user("heloisa").roles("PACIENTE")))
+                .andExpect(status().isForbidden());
+
+        mockMvc.perform(post("/consulta/save").with(csrf()).with(user("heloisa").roles("PACIENTE")))
+                .andExpect(status().isForbidden());
+
+        mockMvc.perform(get("/consulta/list").with(user("heloisa").roles("PACIENTE")))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("Paciente so pode ver as suas proprias consultas")
+    void pacienteSoPodeVerSuasPropriasConsultas() throws Exception {
+        // Heloisa (id 1) pode ver suas consultas
+        mockMvc.perform(get("/paciente/consultas/1").with(user("heloisa").roles("PACIENTE")))
+                .andExpect(status().isOk());
+
+        // Minhas consultas redireciona para a consulta de Heloisa
+        mockMvc.perform(get("/paciente/minhas-consultas").with(user("heloisa").roles("PACIENTE")))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/paciente/consultas/1"));
+
+        // Ao tentar ver consultas de outro paciente (id 2), e redirecionada para a sua propria lista
+        mockMvc.perform(get("/paciente/consultas/2").with(user("heloisa").roles("PACIENTE")))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/paciente/consultas/1"));
     }
 
     @Test

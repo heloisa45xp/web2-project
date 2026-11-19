@@ -45,16 +45,7 @@ public class ConsultaController {
     }
 
     @GetMapping("form")
-    public ModelAndView form(Consulta consulta, ModelMap model, Authentication authentication) {
-        if (authentication != null && SecurityUtils.hasRole(authentication, "PACIENTE")
-                && !SecurityUtils.hasAnyRole(authentication, "ADMIN", "SECRETARIO")) {
-            Pessoa pessoa = pessoaRepository.buscarPorUsuario(authentication.getName());
-            if (pessoa instanceof Paciente p) {
-                consulta.setPaciente(p);
-                model.addAttribute("pacienteLogado", p);
-            }
-        }
-
+    public ModelAndView form(Consulta consulta, ModelMap model) {
         model.addAttribute("pacientes", pacienteRepository.pacientes());
         model.addAttribute("medicos", medicoRepository.medicos());
         return new ModelAndView("consulta/form", model);
@@ -78,15 +69,6 @@ public class ConsultaController {
     @PostMapping("save")
     public ModelAndView save(@Validated({Default.class, Cadastro.class}) Consulta consulta,
                              BindingResult result, ModelMap model, Authentication authentication) {
-        if (authentication != null && SecurityUtils.hasRole(authentication, "PACIENTE")
-                && !SecurityUtils.hasAnyRole(authentication, "ADMIN", "SECRETARIO")) {
-            Pessoa pessoa = pessoaRepository.buscarPorUsuario(authentication.getName());
-            if (pessoa instanceof Paciente p) {
-                consulta.setPaciente(p);
-                model.addAttribute("pacienteLogado", p);
-            }
-        }
-
         if (result.hasErrors()) {
             model.addAttribute("pacientes", pacienteRepository.pacientes());
             model.addAttribute("medicos", medicoRepository.medicos());

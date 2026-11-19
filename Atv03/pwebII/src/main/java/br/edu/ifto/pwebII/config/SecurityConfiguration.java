@@ -47,7 +47,7 @@ public class SecurityConfiguration {
                 .requestMatchers("/consulta/remove/**").hasAnyRole("ADMIN", "SECRETARIO")
                 .requestMatchers("/consulta/edit/**", "/consulta/update").hasAnyRole("ADMIN", "SECRETARIO", "MEDICO")
                 .requestMatchers("/consulta/list").hasAnyRole("ADMIN", "SECRETARIO", "MEDICO")
-                .requestMatchers("/consulta/form", "/consulta/save").hasAnyRole("ADMIN", "SECRETARIO", "PACIENTE", "MEDICO")
+                .requestMatchers("/consulta/form", "/consulta/save").hasAnyRole("ADMIN", "SECRETARIO")
 
                 // Console H2 (para suporte a desenvolvimento e testes)
                 .requestMatchers("/h2-console/**").permitAll()
