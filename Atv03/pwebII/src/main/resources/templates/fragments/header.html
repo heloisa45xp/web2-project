@@ -9,10 +9,13 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarPrincipal">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                        <a class="nav-link" th:href="@{/secretario/list}">Secretários</a>
+                    </li>
                     <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')">
                         <a class="nav-link" th:href="@{/paciente/list}">Pacientes</a>
                     </li>
-                    <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO', 'PACIENTE')">
+                    <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO')">
                         <a class="nav-link" th:href="@{/medico/list}">Médicos</a>
                     </li>
                     <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')">
@@ -21,13 +24,10 @@
                     <li class="nav-item" sec:authorize="hasRole('PACIENTE') and !hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')">
                         <a class="nav-link" th:href="@{/paciente/minhas-consultas}">Minhas Consultas</a>
                     </li>
-                    <li class="nav-item" sec:authorize="hasRole('MEDICO')">
-                        <a class="nav-link" th:href="@{/medico/minha-agenda}">Minha Agenda</a>
-                    </li>
-                    <li class="nav-item" sec:authorize="!isAuthenticated() or hasAnyRole('ADMIN', 'SECRETARIO')">
+                    <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO')">
                         <a class="nav-link" th:href="@{/paciente/form}">Novo paciente</a>
                     </li>
-                    <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO', 'PACIENTE')">
+                    <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO')">
                         <a class="nav-link" th:href="@{/consulta/form}">Nova consulta</a>
                     </li>
                 </ul>

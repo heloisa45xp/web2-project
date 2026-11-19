@@ -21,18 +21,18 @@ public class SecurityConfiguration {
                                                    UsuarioDetailsService usuarioDetailsService) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                // Recursos estáticos e páginas públicas
+                // Recursos estáticos e página de login públicos
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/error").permitAll()
-                .requestMatchers("/", "/login").permitAll()
-
-                // Cadastro público de pacientes (auto-cadastro de visitantes)
-                .requestMatchers("/paciente/form").permitAll()
-                .requestMatchers(HttpMethod.POST, "/paciente/save").permitAll()
+                .requestMatchers("/login").permitAll()
 
                 // Atalhos para consultas do usuário autenticado
-                .requestMatchers("/paciente/minhas-consultas", "/medico/minha-agenda").authenticated()
+                .requestMatchers("/paciente/minhas-consultas").authenticated()
+
+                // Regras para módulo de Secretários (apenas ADMIN)
+                .requestMatchers("/secretario/**").hasRole("ADMIN")
 
                 // Regras para módulo de Pacientes
+                .requestMatchers("/paciente/form", "/paciente/save").hasAnyRole("ADMIN", "SECRETARIO")
                 .requestMatchers("/paciente/remove/**").hasRole("ADMIN")
                 .requestMatchers("/paciente/edit/**", "/paciente/update").hasAnyRole("ADMIN", "SECRETARIO")
                 .requestMatchers("/paciente/list").hasAnyRole("ADMIN", "SECRETARIO", "MEDICO")
@@ -40,14 +40,14 @@ public class SecurityConfiguration {
 
                 // Regras para módulo de Médicos
                 .requestMatchers("/medico/form", "/medico/save", "/medico/edit/**", "/medico/update", "/medico/remove/**").hasRole("ADMIN")
-                .requestMatchers("/medico/list").hasAnyRole("ADMIN", "SECRETARIO", "MEDICO", "PACIENTE")
-                .requestMatchers("/medico/consultas/**").hasAnyRole("ADMIN", "SECRETARIO", "MEDICO")
+                .requestMatchers("/medico/list").hasAnyRole("ADMIN", "SECRETARIO")
+                .requestMatchers("/medico/consultas/**").hasAnyRole("ADMIN", "SECRETARIO")
 
                 // Regras para módulo de Consultas
                 .requestMatchers("/consulta/remove/**").hasAnyRole("ADMIN", "SECRETARIO")
                 .requestMatchers("/consulta/edit/**", "/consulta/update").hasAnyRole("ADMIN", "SECRETARIO", "MEDICO")
                 .requestMatchers("/consulta/list").hasAnyRole("ADMIN", "SECRETARIO", "MEDICO")
-                .requestMatchers("/consulta/form", "/consulta/save").hasAnyRole("ADMIN", "SECRETARIO", "PACIENTE", "MEDICO")
+                .requestMatchers("/consulta/form", "/consulta/save").hasAnyRole("ADMIN", "SECRETARIO")
 
                 // Console H2 (para suporte a desenvolvimento e testes)
                 .requestMatchers("/h2-console/**").permitAll()

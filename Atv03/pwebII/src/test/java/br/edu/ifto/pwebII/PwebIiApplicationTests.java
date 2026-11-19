@@ -45,6 +45,9 @@ class PwebIiApplicationTests {
     private RepositorioPessoa pessoaRepository;
 
     @Autowired
+    private br.edu.ifto.pwebII.model.jdbc.repository.RepositorioConsulta consultaRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Test
@@ -95,21 +98,19 @@ class PwebIiApplicationTests {
     }
 
     @Test
-    @DisplayName("Endpoints publicos devem permitir acesso anonimo")
-    void endpointsPublicosDevemPermitirAcessoAnonimo() throws Exception {
-        mockMvc.perform(get("/"))
-                .andExpect(status().isOk());
-
+    @DisplayName("Endpoint de login deve permitir acesso anonimo")
+    void loginPermiteAcessoAnonimo() throws Exception {
         mockMvc.perform(get("/login"))
-                .andExpect(status().isOk());
-
-        mockMvc.perform(get("/paciente/form"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @DisplayName("Acesso anonimo a rotas protegidas deve redirecionar para login")
+    @DisplayName("Acesso anonimo a raiz ou rotas protegidas deve redirecionar para login")
     void acessoAnonimoRotasProtegidasRedirecionaParaLogin() throws Exception {
+        mockMvc.perform(get("/").accept(org.springframework.http.MediaType.TEXT_HTML))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string("Location", org.hamcrest.Matchers.containsString("/login")));
+
         mockMvc.perform(get("/paciente/list").accept(org.springframework.http.MediaType.TEXT_HTML))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().string("Location", org.hamcrest.Matchers.containsString("/login")));
@@ -120,22 +121,55 @@ class PwebIiApplicationTests {
     }
 
     @Test
-    @DisplayName("Controle de acesso do perfil PACIENTE: pode ver medicos, mas nao lista de pacientes nem cadastro de medico")
+    @DisplayName("Controle de acesso do perfil PACIENTE: nao pode ver medicos, criar consulta nem ver lista geral de consultas")
     void controleAcessoPaciente() throws Exception {
         mockMvc.perform(get("/medico/list").with(user("heloisa").roles("PACIENTE")))
-                .andExpect(status().isOk());
+                .andExpect(status().isForbidden());
 
         mockMvc.perform(get("/paciente/list").with(user("heloisa").roles("PACIENTE")))
                 .andExpect(status().isForbidden());
 
+        mockMvc.perform(get("/paciente/form").with(user("heloisa").roles("PACIENTE")))
+                .andExpect(status().isForbidden());
+
         mockMvc.perform(get("/medico/form").with(user("heloisa").roles("PACIENTE")))
                 .andExpect(status().isForbidden());
+
+        mockMvc.perform(get("/consulta/form").with(user("heloisa").roles("PACIENTE")))
+                .andExpect(status().isForbidden());
+
+        mockMvc.perform(post("/consulta/save").with(csrf()).with(user("heloisa").roles("PACIENTE")))
+                .andExpect(status().isForbidden());
+
+        mockMvc.perform(get("/consulta/list").with(user("heloisa").roles("PACIENTE")))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("Paciente so pode ver as suas proprias consultas")
+    void pacienteSoPodeVerSuasPropriasConsultas() throws Exception {
+        // Heloisa (id 1) pode ver suas consultas
+        mockMvc.perform(get("/paciente/consultas/1").with(user("heloisa").roles("PACIENTE")))
+                .andExpect(status().isOk());
+
+        // Minhas consultas redireciona para a consulta de Heloisa
+        mockMvc.perform(get("/paciente/minhas-consultas").with(user("heloisa").roles("PACIENTE")))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/paciente/consultas/1"));
+
+        // Ao tentar ver consultas de outro paciente (id 2), e redirecionada para a sua propria lista
+        mockMvc.perform(get("/paciente/consultas/2").with(user("heloisa").roles("PACIENTE")))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/paciente/consultas/1"));
     }
 
     @Test
     @DisplayName("Controle de acesso do perfil SECRETARIO: pode gerenciar pacientes e consultas, mas nao médicos")
     void controleAcessoSecretario() throws Exception {
         mockMvc.perform(get("/paciente/list").with(user("secretario").roles("SECRETARIO")))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/paciente/form").with(user("secretario").roles("SECRETARIO")))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/consulta/list").with(user("secretario").roles("SECRETARIO")))
@@ -149,22 +183,53 @@ class PwebIiApplicationTests {
 
         mockMvc.perform(get("/paciente/remove/1").with(user("secretario").roles("SECRETARIO")))
                 .andExpect(status().isForbidden());
+
+        mockMvc.perform(get("/secretario/list").with(user("secretario").roles("SECRETARIO")))
+                .andExpect(status().isForbidden());
     }
 
     @Test
-    @DisplayName("Controle de acesso do perfil MEDICO: pode ver pacientes, medicos e consultas")
+    @DisplayName("Controle de acesso do perfil MEDICO: nao pode ver outros medicos nem cadastrar paciente/medico")
     void controleAcessoMedico() throws Exception {
         mockMvc.perform(get("/paciente/list").with(user("dr.roberto").roles("MEDICO")))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/medico/list").with(user("dr.roberto").roles("MEDICO")))
-                .andExpect(status().isOk());
+                .andExpect(status().isForbidden());
 
         mockMvc.perform(get("/consulta/list").with(user("dr.roberto").roles("MEDICO")))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/medico/form").with(user("dr.roberto").roles("MEDICO")))
                 .andExpect(status().isForbidden());
+
+        mockMvc.perform(get("/paciente/form").with(user("dr.roberto").roles("MEDICO")))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("Medico so visualiza seus pacientes associados e pode alterar consulta com anotacoes")
+    void medicoVisualizaApenasSeusPacientesEAlteraAnotacoesDaConsulta() throws Exception {
+        // Dr. Roberto tem apenas a paciente Heloisa (id 1) associada em import.sql
+        mockMvc.perform(get("/paciente/list").with(user("dr.roberto").roles("MEDICO")))
+                .andExpect(status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.model().attributeExists("pacientes"));
+
+        // Dr. Roberto altera informacoes e inclui anotacoes da consulta 1
+        mockMvc.perform(post("/consulta/update")
+                        .with(csrf())
+                        .with(user("dr.roberto").roles("MEDICO"))
+                        .param("id", "1")
+                        .param("data", "2026-03-10T14:30")
+                        .param("valor", "250.00")
+                        .param("observacao", "Consulta realizada com sucesso")
+                        .param("anotacoes", "Paciente orientado a repouso e retorno em 15 dias.")
+                        .param("paciente.id", "1")
+                        .param("medico.id", "3"))
+                .andExpect(status().is3xxRedirection());
+
+        br.edu.ifto.pwebII.model.entity.Consulta consultaAtualizada = consultaRepository.consulta(1L);
+        assertThat(consultaAtualizada.getAnotacoes()).isEqualTo("Paciente orientado a repouso e retorno em 15 dias.");
     }
 
     @Test
@@ -181,6 +246,34 @@ class PwebIiApplicationTests {
 
         mockMvc.perform(get("/medico/form").with(user("admin").roles("ADMIN")))
                 .andExpect(status().isOk());
+
+        mockMvc.perform(get("/secretario/list").with(user("admin").roles("ADMIN")))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/secretario/form").with(user("admin").roles("ADMIN")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Admin deve cadastrar secretario com credenciais e papel SECRETARIO")
+    void deveCadastrarSecretarioPeloAdmin() throws Exception {
+        mockMvc.perform(post("/secretario/save")
+                        .with(csrf())
+                        .with(user("admin").roles("ADMIN"))
+                        .param("nome", "Mariana Recepcao")
+                        .param("cpf", "123.456.789-09")
+                        .param("email", "mariana@clinica.com")
+                        .param("telefone", "(63) 98111-2233")
+                        .param("usuario.usuario", "marianasecretaria")
+                        .param("usuario.senha", "senhaSec123"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/secretario/list"));
+
+        Usuario usuarioSalvo = usuarioRepository.buscarPorUsuario("marianasecretaria");
+        assertThat(usuarioSalvo).isNotNull();
+        assertThat(passwordEncoder.matches("senhaSec123", usuarioSalvo.getSenha())).isTrue();
+        assertThat(usuarioSalvo.getPerfis().stream().map(p -> p.getNome()).toList())
+                .contains("SECRETARIO");
     }
 
     @Test
@@ -188,6 +281,7 @@ class PwebIiApplicationTests {
     void deveCadastrarPacienteComCredenciaisEPapelInicial() throws Exception {
         mockMvc.perform(post("/paciente/save")
                         .with(csrf())
+                        .with(user("secretario").roles("SECRETARIO"))
                         .param("nome", "Carlos Silva")
                         .param("cpf", "987.654.321-00")
                         .param("email", "carlos.silva@exemplo.com")
@@ -195,7 +289,7 @@ class PwebIiApplicationTests {
                         .param("usuario.usuario", "carlossilva")
                         .param("usuario.senha", "senhaSecreta123"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login?cadastrado=true"));
+                .andExpect(redirectedUrl("/paciente/list"));
 
         Usuario usuarioSalvo = usuarioRepository.buscarPorUsuario("carlossilva");
         assertThat(usuarioSalvo).isNotNull();

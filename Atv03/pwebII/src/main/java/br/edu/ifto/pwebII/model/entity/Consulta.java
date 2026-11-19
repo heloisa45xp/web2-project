@@ -33,6 +33,9 @@ public class Consulta implements Serializable {
     @Size(max = 500, message = "A observacao deve ter no maximo {max} caracteres.")
     private String observacao;
 
+    @Size(max = 2000, message = "As anotacoes devem ter no maximo {max} caracteres.")
+    private String anotacoes;
+
     @NotNull(message = "Selecione o paciente da consulta.")
     @ManyToOne
     @JoinColumn(name = "paciente_id")
@@ -84,6 +87,14 @@ public class Consulta implements Serializable {
 
     public void setObservacao(String observacao) {
         this.observacao = observacao;
+    }
+
+    public String getAnotacoes() {
+        return anotacoes;
+    }
+
+    public void setAnotacoes(String anotacoes) {
+        this.anotacoes = anotacoes;
     }
 
     public Paciente getPaciente() {

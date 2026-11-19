@@ -62,7 +62,15 @@ public class PacienteController {
     }
 
     @GetMapping("/list")
-    public ModelAndView list(ModelMap model) {
+    public ModelAndView list(ModelMap model, Authentication authentication) {
+        if (authentication != null && SecurityUtils.hasRole(authentication, "MEDICO")
+                && !SecurityUtils.hasAnyRole(authentication, "ADMIN", "SECRETARIO")) {
+            Pessoa pessoa = pessoaRepository.buscarPorUsuario(authentication.getName());
+            if (pessoa instanceof br.edu.ifto.pwebII.model.entity.Medico medico) {
+                model.addAttribute("pacientes", repository.pacientesPorMedico(medico.getId()));
+                return new ModelAndView("paciente/list", model);
+            }
+        }
         model.addAttribute("pacientes", repository.pacientes());
         return new ModelAndView("paciente/list", model);
     }
@@ -163,7 +171,14 @@ public class PacienteController {
 
     // Requisito: Visualizar consultas de um paciente
     @GetMapping("/consultas/{id}")
-    public ModelAndView consultas(@PathVariable("id") Long id, ModelMap model) {
+    public ModelAndView consultas(@PathVariable("id") Long id, ModelMap model, Authentication authentication) {
+        if (authentication != null && SecurityUtils.hasRole(authentication, "PACIENTE")
+                && !SecurityUtils.hasAnyRole(authentication, "ADMIN", "SECRETARIO", "MEDICO")) {
+            Pessoa pessoa = pessoaRepository.buscarPorUsuario(authentication.getName());
+            if (pessoa instanceof Paciente p && !p.getId().equals(id)) {
+                return new ModelAndView("redirect:/paciente/consultas/" + p.getId());
+            }
+        }
         Paciente paciente = repository.paciente(id);
         model.addAttribute("paciente", paciente);
         model.addAttribute("consultas", consultaRepository.consultasPorPaciente(id));
