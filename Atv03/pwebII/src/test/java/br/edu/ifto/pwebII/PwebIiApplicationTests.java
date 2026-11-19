@@ -121,10 +121,10 @@ class PwebIiApplicationTests {
     }
 
     @Test
-    @DisplayName("Controle de acesso do perfil PACIENTE: nao pode criar consulta nem ver lista geral de consultas")
+    @DisplayName("Controle de acesso do perfil PACIENTE: nao pode ver medicos, criar consulta nem ver lista geral de consultas")
     void controleAcessoPaciente() throws Exception {
         mockMvc.perform(get("/medico/list").with(user("heloisa").roles("PACIENTE")))
-                .andExpect(status().isOk());
+                .andExpect(status().isForbidden());
 
         mockMvc.perform(get("/paciente/list").with(user("heloisa").roles("PACIENTE")))
                 .andExpect(status().isForbidden());

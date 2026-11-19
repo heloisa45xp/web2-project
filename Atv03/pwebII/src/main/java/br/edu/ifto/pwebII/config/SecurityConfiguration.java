@@ -40,7 +40,7 @@ public class SecurityConfiguration {
 
                 // Regras para módulo de Médicos
                 .requestMatchers("/medico/form", "/medico/save", "/medico/edit/**", "/medico/update", "/medico/remove/**").hasRole("ADMIN")
-                .requestMatchers("/medico/list").hasAnyRole("ADMIN", "SECRETARIO", "PACIENTE")
+                .requestMatchers("/medico/list").hasAnyRole("ADMIN", "SECRETARIO")
                 .requestMatchers("/medico/consultas/**").hasAnyRole("ADMIN", "SECRETARIO")
 
                 // Regras para módulo de Consultas

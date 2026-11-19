@@ -38,7 +38,7 @@
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-4" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')">
                 <div class="card card-pastel shadow-sm h-100">
                     <div class="card-header text-center">
                         <h2 class="h5 mb-0">Pacientes</h2>
@@ -46,15 +46,14 @@
                     <div class="card-body d-flex flex-column">
                         <p class="card-text">Cadastre pacientes e acompanhe as consultas de cada um.</p>
                         <div class="mt-auto d-grid gap-2">
-                            <a class="btn btn-pastel" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')" th:href="@{/paciente/list}">Ver lista de pacientes</a>
-                            <a class="btn btn-pastel" sec:authorize="hasRole('PACIENTE') and !hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')" th:href="@{/paciente/minhas-consultas}">Minhas consultas</a>
+                            <a class="btn btn-pastel" th:href="@{/paciente/list}">Ver lista de pacientes</a>
                             <a class="btn btn-outline-secondary" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO')" th:href="@{/paciente/form}">Novo paciente</a>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-4" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO', 'PACIENTE') and !hasRole('MEDICO')">
+            <div class="col-md-4" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO')">
                 <div class="card card-pastel shadow-sm h-100">
                     <div class="card-header text-center">
                         <h2 class="h5 mb-0">Médicos</h2>
@@ -72,13 +71,14 @@
             <div class="col-md-4">
                 <div class="card card-pastel shadow-sm h-100">
                     <div class="card-header text-center">
-                        <h2 class="h5 mb-0">Consultas</h2>
+                        <h2 class="h5 mb-0" th:text="${#authorization.expression('hasRole(''PACIENTE'') and !hasAnyRole(''ADMIN'', ''SECRETARIO'', ''MEDICO'')')} ? 'Minhas Consultas' : 'Consultas'">Consultas</h2>
                     </div>
                     <div class="card-body d-flex flex-column">
-                        <p class="card-text">Agende, edite e acompanhe todas as consultas da clínica.</p>
+                        <p class="card-text" sec:authorize="hasRole('PACIENTE') and !hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')">Consulte o histórico e detalhes dos seus atendimentos.</p>
+                        <p class="card-text" sec:authorize="!hasRole('PACIENTE') or hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')">Agende, edite e acompanhe todas as consultas da clínica.</p>
                         <div class="mt-auto d-grid gap-2">
                             <a class="btn btn-pastel" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')" th:href="@{/consulta/list}">Ver lista de consultas</a>
-                            <a class="btn btn-pastel" sec:authorize="hasRole('PACIENTE') and !hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')" th:href="@{/paciente/minhas-consultas}">Minhas consultas</a>
+                            <a class="btn btn-pastel" sec:authorize="hasRole('PACIENTE') and !hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')" th:href="@{/paciente/minhas-consultas}">Acessar minhas consultas</a>
                             <a class="btn btn-outline-secondary" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO')" th:href="@{/consulta/form}">Nova consulta</a>
                         </div>
                     </div>

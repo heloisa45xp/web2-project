@@ -30,13 +30,13 @@ public class RepositorioConsulta {
     }
 
     public List<Consulta> consultasPorPaciente(Long pacienteId) {
-        Query query = editm.createQuery("select c from Consulta c where c.paciente.id = :pacienteId");
+        Query query = editm.createQuery("select distinct c from Consulta c where c.paciente.id = :pacienteId");
         query.setParameter("pacienteId", pacienteId);
         return query.getResultList();
     }
 
     public List<Consulta> consultasPorMedico(Long medicoId) {
-        Query query = editm.createQuery("select c from Consulta c where c.medico.id = :medicoId");
+        Query query = editm.createQuery("select distinct c from Consulta c where c.medico.id = :medicoId");
         query.setParameter("medicoId", medicoId);
         return query.getResultList();
     }
