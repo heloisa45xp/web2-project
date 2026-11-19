@@ -29,6 +29,12 @@ public class RepositorioPaciente {
         return query.getResultList();
     }
 
+    public List<Paciente> pacientesPorMedico(Long medicoId) {
+        Query query = editm.createQuery("select distinct c.paciente from Consulta c where c.medico.id = :medicoId");
+        query.setParameter("medicoId", medicoId);
+        return query.getResultList();
+    }
+
     public void remove(Long id){
         Paciente p = editm.find(Paciente.class, id);
         if (p != null) {

@@ -15,7 +15,7 @@
                     <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')">
                         <a class="nav-link" th:href="@{/paciente/list}">Pacientes</a>
                     </li>
-                    <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO', 'PACIENTE')">
+                    <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO', 'PACIENTE') and !hasRole('MEDICO')">
                         <a class="nav-link" th:href="@{/medico/list}">Médicos</a>
                     </li>
                     <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')">
@@ -23,9 +23,6 @@
                     </li>
                     <li class="nav-item" sec:authorize="hasRole('PACIENTE') and !hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')">
                         <a class="nav-link" th:href="@{/paciente/minhas-consultas}">Minhas Consultas</a>
-                    </li>
-                    <li class="nav-item" sec:authorize="hasRole('MEDICO')">
-                        <a class="nav-link" th:href="@{/medico/minha-agenda}">Minha Agenda</a>
                     </li>
                     <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO')">
                         <a class="nav-link" th:href="@{/paciente/form}">Novo paciente</a>

@@ -62,7 +62,15 @@ public class PacienteController {
     }
 
     @GetMapping("/list")
-    public ModelAndView list(ModelMap model) {
+    public ModelAndView list(ModelMap model, Authentication authentication) {
+        if (authentication != null && SecurityUtils.hasRole(authentication, "MEDICO")
+                && !SecurityUtils.hasAnyRole(authentication, "ADMIN", "SECRETARIO")) {
+            Pessoa pessoa = pessoaRepository.buscarPorUsuario(authentication.getName());
+            if (pessoa instanceof br.edu.ifto.pwebII.model.entity.Medico medico) {
+                model.addAttribute("pacientes", repository.pacientesPorMedico(medico.getId()));
+                return new ModelAndView("paciente/list", model);
+            }
+        }
         model.addAttribute("pacientes", repository.pacientes());
         return new ModelAndView("paciente/list", model);
     }

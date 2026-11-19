@@ -45,6 +45,9 @@ class PwebIiApplicationTests {
     private RepositorioPessoa pessoaRepository;
 
     @Autowired
+    private br.edu.ifto.pwebII.model.jdbc.repository.RepositorioConsulta consultaRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Test
@@ -159,13 +162,13 @@ class PwebIiApplicationTests {
     }
 
     @Test
-    @DisplayName("Controle de acesso do perfil MEDICO: pode ver pacientes, medicos e consultas")
+    @DisplayName("Controle de acesso do perfil MEDICO: nao pode ver outros medicos nem cadastrar paciente/medico")
     void controleAcessoMedico() throws Exception {
         mockMvc.perform(get("/paciente/list").with(user("dr.roberto").roles("MEDICO")))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/medico/list").with(user("dr.roberto").roles("MEDICO")))
-                .andExpect(status().isOk());
+                .andExpect(status().isForbidden());
 
         mockMvc.perform(get("/consulta/list").with(user("dr.roberto").roles("MEDICO")))
                 .andExpect(status().isOk());
@@ -175,6 +178,31 @@ class PwebIiApplicationTests {
 
         mockMvc.perform(get("/paciente/form").with(user("dr.roberto").roles("MEDICO")))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("Medico so visualiza seus pacientes associados e pode alterar consulta com anotacoes")
+    void medicoVisualizaApenasSeusPacientesEAlteraAnotacoesDaConsulta() throws Exception {
+        // Dr. Roberto tem apenas a paciente Heloisa (id 1) associada em import.sql
+        mockMvc.perform(get("/paciente/list").with(user("dr.roberto").roles("MEDICO")))
+                .andExpect(status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.model().attributeExists("pacientes"));
+
+        // Dr. Roberto altera informacoes e inclui anotacoes da consulta 1
+        mockMvc.perform(post("/consulta/update")
+                        .with(csrf())
+                        .with(user("dr.roberto").roles("MEDICO"))
+                        .param("id", "1")
+                        .param("data", "2026-03-10T14:30")
+                        .param("valor", "250.00")
+                        .param("observacao", "Consulta realizada com sucesso")
+                        .param("anotacoes", "Paciente orientado a repouso e retorno em 15 dias.")
+                        .param("paciente.id", "1")
+                        .param("medico.id", "3"))
+                .andExpect(status().is3xxRedirection());
+
+        br.edu.ifto.pwebII.model.entity.Consulta consultaAtualizada = consultaRepository.consulta(1L);
+        assertThat(consultaAtualizada.getAnotacoes()).isEqualTo("Paciente orientado a repouso e retorno em 15 dias.");
     }
 
     @Test

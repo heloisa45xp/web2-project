@@ -57,6 +57,16 @@
                                      th:text="${err}"></div>
                             </div>
 
+                            <div class="col-12">
+                                <label class="form-label" for="anotacoes">Anotações / Informações da Consulta Realizada</label>
+                                <textarea class="form-control" id="anotacoes" rows="3" th:field="*{anotacoes}"
+                                          placeholder="Anotações do médico sobre a consulta realizada, diagnóstico, prescrições, etc."
+                                          th:classappend="${#fields.hasErrors('anotacoes')} ? 'is-invalid'"></textarea>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('anotacoes')}"
+                                     th:each="err : ${#fields.errors('anotacoes')}"
+                                     th:text="${err}"></div>
+                            </div>
+
                             <!-- Paciente: se for paciente logado, fixa o nome dele; senao exibe select para admin/secretario -->
                             <div class="col-md-6" th:if="${pacienteLogado != null}">
                                 <label class="form-label" for="pacienteNomeFixo">Paciente</label>

@@ -61,7 +61,15 @@ public class ConsultaController {
     }
 
     @GetMapping("/list")
-    public ModelAndView list(ModelMap model) {
+    public ModelAndView list(ModelMap model, Authentication authentication) {
+        if (authentication != null && SecurityUtils.hasRole(authentication, "MEDICO")
+                && !SecurityUtils.hasAnyRole(authentication, "ADMIN", "SECRETARIO")) {
+            Pessoa pessoa = pessoaRepository.buscarPorUsuario(authentication.getName());
+            if (pessoa instanceof br.edu.ifto.pwebII.model.entity.Medico medico) {
+                model.addAttribute("consultas", repository.consultasPorMedico(medico.getId()));
+                return new ModelAndView("consulta/list", model);
+            }
+        }
         model.addAttribute("consultas", repository.consultas());
         return new ModelAndView("consulta/list", model);
     }

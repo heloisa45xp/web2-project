@@ -26,7 +26,7 @@ public class SecurityConfiguration {
                 .requestMatchers("/login").permitAll()
 
                 // Atalhos para consultas do usuário autenticado
-                .requestMatchers("/paciente/minhas-consultas", "/medico/minha-agenda").authenticated()
+                .requestMatchers("/paciente/minhas-consultas").authenticated()
 
                 // Regras para módulo de Secretários (apenas ADMIN)
                 .requestMatchers("/secretario/**").hasRole("ADMIN")
@@ -40,8 +40,8 @@ public class SecurityConfiguration {
 
                 // Regras para módulo de Médicos
                 .requestMatchers("/medico/form", "/medico/save", "/medico/edit/**", "/medico/update", "/medico/remove/**").hasRole("ADMIN")
-                .requestMatchers("/medico/list").hasAnyRole("ADMIN", "SECRETARIO", "MEDICO", "PACIENTE")
-                .requestMatchers("/medico/consultas/**").hasAnyRole("ADMIN", "SECRETARIO", "MEDICO")
+                .requestMatchers("/medico/list").hasAnyRole("ADMIN", "SECRETARIO", "PACIENTE")
+                .requestMatchers("/medico/consultas/**").hasAnyRole("ADMIN", "SECRETARIO")
 
                 // Regras para módulo de Consultas
                 .requestMatchers("/consulta/remove/**").hasAnyRole("ADMIN", "SECRETARIO")
