@@ -147,6 +147,9 @@ class PwebIiApplicationTests {
 
         mockMvc.perform(get("/paciente/remove/1").with(user("secretario").roles("SECRETARIO")))
                 .andExpect(status().isForbidden());
+
+        mockMvc.perform(get("/secretario/list").with(user("secretario").roles("SECRETARIO")))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -179,6 +182,34 @@ class PwebIiApplicationTests {
 
         mockMvc.perform(get("/medico/form").with(user("admin").roles("ADMIN")))
                 .andExpect(status().isOk());
+
+        mockMvc.perform(get("/secretario/list").with(user("admin").roles("ADMIN")))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/secretario/form").with(user("admin").roles("ADMIN")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Admin deve cadastrar secretario com credenciais e papel SECRETARIO")
+    void deveCadastrarSecretarioPeloAdmin() throws Exception {
+        mockMvc.perform(post("/secretario/save")
+                        .with(csrf())
+                        .with(user("admin").roles("ADMIN"))
+                        .param("nome", "Mariana Recepcao")
+                        .param("cpf", "123.456.789-09")
+                        .param("email", "mariana@clinica.com")
+                        .param("telefone", "(63) 98111-2233")
+                        .param("usuario.usuario", "marianasecretaria")
+                        .param("usuario.senha", "senhaSec123"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/secretario/list"));
+
+        Usuario usuarioSalvo = usuarioRepository.buscarPorUsuario("marianasecretaria");
+        assertThat(usuarioSalvo).isNotNull();
+        assertThat(passwordEncoder.matches("senhaSec123", usuarioSalvo.getSenha())).isTrue();
+        assertThat(usuarioSalvo.getPerfis().stream().map(p -> p.getNome()).toList())
+                .contains("SECRETARIO");
     }
 
     @Test

@@ -28,6 +28,9 @@ public class SecurityConfiguration {
                 // Atalhos para consultas do usuário autenticado
                 .requestMatchers("/paciente/minhas-consultas", "/medico/minha-agenda").authenticated()
 
+                // Regras para módulo de Secretários (apenas ADMIN)
+                .requestMatchers("/secretario/**").hasRole("ADMIN")
+
                 // Regras para módulo de Pacientes
                 .requestMatchers("/paciente/remove/**").hasRole("ADMIN")
                 .requestMatchers("/paciente/edit/**", "/paciente/update").hasAnyRole("ADMIN", "SECRETARIO")

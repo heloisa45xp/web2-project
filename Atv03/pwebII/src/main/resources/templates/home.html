@@ -23,6 +23,21 @@
         <!-- Atalhos para as páginas -->
         <div class="row justify-content-center g-4">
 
+            <div class="col-md-4" sec:authorize="hasRole('ADMIN')">
+                <div class="card card-pastel shadow-sm h-100">
+                    <div class="card-header text-center">
+                        <h2 class="h5 mb-0">Secretários</h2>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <p class="card-text">Cadastre e gerencie a equipe de secretários e seus acessos.</p>
+                        <div class="mt-auto d-grid gap-2">
+                            <a class="btn btn-pastel" th:href="@{/secretario/list}">Ver lista de secretários</a>
+                            <a class="btn btn-outline-secondary" th:href="@{/secretario/form}">Novo secretário</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="col-md-4">
                 <div class="card card-pastel shadow-sm h-100">
                     <div class="card-header text-center">
