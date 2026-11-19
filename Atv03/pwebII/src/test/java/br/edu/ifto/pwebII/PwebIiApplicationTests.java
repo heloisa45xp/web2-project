@@ -95,21 +95,19 @@ class PwebIiApplicationTests {
     }
 
     @Test
-    @DisplayName("Endpoints publicos devem permitir acesso anonimo")
-    void endpointsPublicosDevemPermitirAcessoAnonimo() throws Exception {
-        mockMvc.perform(get("/"))
-                .andExpect(status().isOk());
-
+    @DisplayName("Endpoint de login deve permitir acesso anonimo")
+    void loginPermiteAcessoAnonimo() throws Exception {
         mockMvc.perform(get("/login"))
-                .andExpect(status().isOk());
-
-        mockMvc.perform(get("/paciente/form"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @DisplayName("Acesso anonimo a rotas protegidas deve redirecionar para login")
+    @DisplayName("Acesso anonimo a raiz ou rotas protegidas deve redirecionar para login")
     void acessoAnonimoRotasProtegidasRedirecionaParaLogin() throws Exception {
+        mockMvc.perform(get("/").accept(org.springframework.http.MediaType.TEXT_HTML))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string("Location", org.hamcrest.Matchers.containsString("/login")));
+
         mockMvc.perform(get("/paciente/list").accept(org.springframework.http.MediaType.TEXT_HTML))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().string("Location", org.hamcrest.Matchers.containsString("/login")));
@@ -188,6 +186,7 @@ class PwebIiApplicationTests {
     void deveCadastrarPacienteComCredenciaisEPapelInicial() throws Exception {
         mockMvc.perform(post("/paciente/save")
                         .with(csrf())
+                        .with(user("secretario").roles("SECRETARIO"))
                         .param("nome", "Carlos Silva")
                         .param("cpf", "987.654.321-00")
                         .param("email", "carlos.silva@exemplo.com")
@@ -195,7 +194,7 @@ class PwebIiApplicationTests {
                         .param("usuario.usuario", "carlossilva")
                         .param("usuario.senha", "senhaSecreta123"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login?cadastrado=true"));
+                .andExpect(redirectedUrl("/paciente/list"));
 
         Usuario usuarioSalvo = usuarioRepository.buscarPorUsuario("carlossilva");
         assertThat(usuarioSalvo).isNotNull();

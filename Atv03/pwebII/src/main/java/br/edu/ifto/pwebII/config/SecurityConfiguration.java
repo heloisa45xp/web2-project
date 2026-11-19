@@ -21,13 +21,9 @@ public class SecurityConfiguration {
                                                    UsuarioDetailsService usuarioDetailsService) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                // Recursos estáticos e páginas públicas
+                // Recursos estáticos e página de login públicos
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/error").permitAll()
-                .requestMatchers("/", "/login").permitAll()
-
-                // Cadastro público de pacientes (auto-cadastro de visitantes)
-                .requestMatchers("/paciente/form").permitAll()
-                .requestMatchers(HttpMethod.POST, "/paciente/save").permitAll()
+                .requestMatchers("/login").permitAll()
 
                 // Atalhos para consultas do usuário autenticado
                 .requestMatchers("/paciente/minhas-consultas", "/medico/minha-agenda").authenticated()
