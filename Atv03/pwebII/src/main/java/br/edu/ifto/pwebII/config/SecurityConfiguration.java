@@ -32,6 +32,7 @@ public class SecurityConfiguration {
                 .requestMatchers("/secretario/**").hasRole("ADMIN")
 
                 // Regras para módulo de Pacientes
+                .requestMatchers("/paciente/form", "/paciente/save").hasAnyRole("ADMIN", "SECRETARIO")
                 .requestMatchers("/paciente/remove/**").hasRole("ADMIN")
                 .requestMatchers("/paciente/edit/**", "/paciente/update").hasAnyRole("ADMIN", "SECRETARIO")
                 .requestMatchers("/paciente/list").hasAnyRole("ADMIN", "SECRETARIO", "MEDICO")

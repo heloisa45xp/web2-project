@@ -27,7 +27,7 @@
                     <li class="nav-item" sec:authorize="hasRole('MEDICO')">
                         <a class="nav-link" th:href="@{/medico/minha-agenda}">Minha Agenda</a>
                     </li>
-                    <li class="nav-item" sec:authorize="!isAuthenticated() or hasAnyRole('ADMIN', 'SECRETARIO')">
+                    <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO')">
                         <a class="nav-link" th:href="@{/paciente/form}">Novo paciente</a>
                     </li>
                     <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO', 'PACIENTE')">

@@ -126,6 +126,9 @@ class PwebIiApplicationTests {
         mockMvc.perform(get("/paciente/list").with(user("heloisa").roles("PACIENTE")))
                 .andExpect(status().isForbidden());
 
+        mockMvc.perform(get("/paciente/form").with(user("heloisa").roles("PACIENTE")))
+                .andExpect(status().isForbidden());
+
         mockMvc.perform(get("/medico/form").with(user("heloisa").roles("PACIENTE")))
                 .andExpect(status().isForbidden());
     }
@@ -134,6 +137,9 @@ class PwebIiApplicationTests {
     @DisplayName("Controle de acesso do perfil SECRETARIO: pode gerenciar pacientes e consultas, mas nao médicos")
     void controleAcessoSecretario() throws Exception {
         mockMvc.perform(get("/paciente/list").with(user("secretario").roles("SECRETARIO")))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/paciente/form").with(user("secretario").roles("SECRETARIO")))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/consulta/list").with(user("secretario").roles("SECRETARIO")))
@@ -165,6 +171,9 @@ class PwebIiApplicationTests {
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/medico/form").with(user("dr.roberto").roles("MEDICO")))
+                .andExpect(status().isForbidden());
+
+        mockMvc.perform(get("/paciente/form").with(user("dr.roberto").roles("MEDICO")))
                 .andExpect(status().isForbidden());
     }
 

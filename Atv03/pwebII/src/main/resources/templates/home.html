@@ -48,7 +48,7 @@
                         <div class="mt-auto d-grid gap-2">
                             <a class="btn btn-pastel" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')" th:href="@{/paciente/list}">Ver lista de pacientes</a>
                             <a class="btn btn-pastel" sec:authorize="hasRole('PACIENTE') and !hasAnyRole('ADMIN', 'SECRETARIO', 'MEDICO')" th:href="@{/paciente/minhas-consultas}">Minhas consultas</a>
-                            <a class="btn btn-outline-secondary" sec:authorize="!isAuthenticated() or hasAnyRole('ADMIN', 'SECRETARIO')" th:href="@{/paciente/form}">Novo paciente</a>
+                            <a class="btn btn-outline-secondary" sec:authorize="hasAnyRole('ADMIN', 'SECRETARIO')" th:href="@{/paciente/form}">Novo paciente</a>
                         </div>
                     </div>
                 </div>
